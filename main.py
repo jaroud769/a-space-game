@@ -118,8 +118,9 @@ def CI_corps_k(liste_corps,k):
 # Définition des constantes
 dF = 1E4 # Newton (force appliquée par l'utilisateur)
 dt = 300
+dt_predic = dt*100 #moins précis pour calculer plus vite !
 color = (255, 0, 255)  # couleur du vaisseau
-nb_frame = 602
+nb_frame = 600
 #on initialise nos tableaux
 
 n = 3 # nombre de corps 
@@ -162,6 +163,10 @@ for k in range(n):
 running = True
 cpt_frame = 600 # Compteur pour lancer le calcul
 while running:
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
     
     # Calcul des trajectoires
     if cpt_frame == 600:# toutes les 10 secondes
@@ -184,17 +189,13 @@ while running:
                 v_corps_k_temps_i = tab_v_predict[:,k,i]
                 a_corps_k_temps_i = tab_a_predict[:,k,i]
                 # Obtention de la position au pas dt suivant
-                tab_r_predict[:,k,i+1] = r_corps_k_temps_i+dt*v_corps_k_temps_i+0.5*(dt)**2*a_corps_k_temps_i #on obtient toutes les nouvelles positions ce qui permet de calculer a_n+1
+                tab_r_predict[:,k,i+1] = r_corps_k_temps_i+dt_predic*v_corps_k_temps_i+0.5*(dt_predic)**2*a_corps_k_temps_i #on obtient toutes les nouvelles positions ce qui permet de calculer a_n+1
     
                 tab_a_predict[:,k,i+1] = calc_acc_k(tab_r_predict[:,:,i+1],k,liste_corps)#on a la nouvelle accélération (avec la nouvelle position) pour calculer new_v 
-                tab_v_predict[:,k,i+1] = tab_v_predict[:,k,i]+0.5*(tab_a_predict[:,k,i]+tab_a_predict[:,k,i+1])*dt#on obtient la nouvelle vitesse
+                tab_v_predict[:,k,i+1] = tab_v_predict[:,k,i]+0.5*(tab_a_predict[:,k,i]+tab_a_predict[:,k,i+1])*dt_predic#on obtient la nouvelle vitesse
 
     cpt_frame += 1
     screen.fill((0, 0, 0))  # Efface l'écran à chaque frame
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
 
     # Contrôles
     dx, dy, ds, cam_input_test = controles()
@@ -207,8 +208,10 @@ while running:
     ay = dy * dF / masse_vaisseau  # a = F / m
     accel_vaisseau = [ax, ay]
     SCALE = 1E-8*10**s# échelle : 1 pixel = 10E4 km de larges
-    
+   ############################################################################################
+   # Retour au temps réel 
     # Calculs des nouvelles positions des n corps !
+
     for k in range(n):
         
             rk = tab_r[:,k] #vecteur position du corps k
