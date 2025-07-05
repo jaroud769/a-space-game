@@ -29,14 +29,14 @@ def Force(rk,rj,k,j,liste_corps):#Calcule la force exercée par tous les corps j
     masse_j, _, rayon_j,_,_ = liste_corps[j].caracteristiques()
     rkj_vec = rj-rk
     rkj = np.linalg.norm(rkj_vec)
-    if rkj < (rayon_k + rayon_j): # évite les divergences
+    if rkj < (rayon_k + rayon_j)/20: # évite les divergences
         return(np.array([0.0,0.0]))
       
     ukj=rkj_vec/rkj
 
     return(np.array((G*masse_k*masse_j/(rkj**2))*ukj)) #retourne le vecteur force
 
-# calc_acc_k : Calcule l'accélération du corps k   
+## calc_acc_k : Calcule l'accélération du corps k   
 def calc_acc_k(tab_r,k,liste_corps):
 
     masse_k ,_ ,_ ,_,_= liste_corps[k].caracteristiques()
@@ -45,9 +45,9 @@ def calc_acc_k(tab_r,k,liste_corps):
     Ftot=np.array([0.0,0.0]) #on initialise le vecteur force total des corps j sur k 
         
     for j in range(n):#toutes les autres j planetes    
-        
-        if j != k : #and liste_masse[k]/liste_masse[j] < 1E6 :  #conditions pour optimiser à verifier    
-            masse_j ,_ ,_ ,_,_= liste_corps[j].caracteristiques()    
+        masse_j ,_ ,_ ,_,_= liste_corps[j].caracteristiques()
+        if j != k  and masse_j > 1E-6*masse_k :  # le corps j doit être suffisament massif 
+                
             rj = tab_r[:,j] #vecteur position du corps j
             Fkj = Force(rk,rj,k,j,liste_corps)
             Ftot += Fkj #on ajoute ttes les contributions des corps j      
@@ -55,30 +55,47 @@ def calc_acc_k(tab_r,k,liste_corps):
     ak=Ftot/masse_k#on récupère l'accélération du corps ak cf PFD
 
     return(ak)
-
+## Permet de tracer un triangle
+def coord_triangle(theta,tab_r):
+    e_r = np.array([np.cos(theta),np.sin(theta)])
+    e_theta = np.array([-np.sin(theta),np.cos(theta)])
+    #longueur totale 
+    L = 10000
+    #largeur
+    l = 4000
+    point_haut = tab_r[:,2] + L/2*e_r
+    # = -L/2 e_r - a /2 e_theta
+    point_gauche = tab_r[:,2] - L/2*e_r - l/2*e_theta
+    point_droite = tab_r[:,2] - L/2*e_r + l/2*e_theta
+    points = [(point_gauche[0],point_gauche[1]),(point_droite[0],point_droite[1]),(point_haut[0],point_haut[1])]
+    return(points)
 
 #Partie jeu 
 #controles : récupère les inputs du joueur
 def controles():
 
     # Contrôles
-    dx=0
+    dtheta = 0
     dy=0
     ds=0
+    dF=0
     cam_input = 2 # pas d'info !!
     pressed = pygame.key.get_pressed()
-    # haut bas gauche droite
+    # avant arriere
     if pressed[pygame.K_z]:
-        dy -= 1  # vers le haut
+        dy += 1  # vers le haut
     if pressed[pygame.K_s]:
-        dy += 1  # vers le bas
+        dy -= 1  # vers le bas
+    # Orientation du vaisseau
     if pressed[pygame.K_q]:
-        dx -= 1  # gauche
+        dtheta -= 0.001  # gauche
+
     if pressed[pygame.K_d]:
-        dx += 1  # droite
+        dtheta += 0.001  # droite
     # Gestion du zoom/dezoom
     if pressed[pygame.K_a]:
         ds -= 0.01
+
     if pressed[pygame.K_e]:
         ds += 0.01
 
@@ -86,8 +103,15 @@ def controles():
         cam_input =1
 
     if pressed[pygame.K_v]:
-        cam_input =0
-    return(dx,dy,ds,cam_input)
+        cam_input += 1
+
+    if pressed[pygame.K_f]:
+       dF -= 0.1
+
+    if pressed[pygame.K_g]:
+       dF += 0.1
+
+    return(dtheta,dy,ds,cam_input,dF)
 
 # rebond : calcul du rebond élastique
 def rebond(v1,m1,v2,m2):
@@ -116,7 +140,7 @@ def CI_corps_k(liste_corps,k):
 #########################################################################################
 
 # Définition des constantes
-dF = 1E4 # Newton (force appliquée par l'utilisateur)
+F = 1E4 # Newton (force appliquée par l'utilisateur)
 dt = 300
 dt_predic = dt*100 #moins précis pour calculer plus vite !
 color = (255, 0, 255)  # couleur du vaisseau
@@ -129,17 +153,17 @@ tab_v=np.zeros((2,n)) #tableau des vitesses
 tab_a=np.zeros((2,n)) #tableau des accélérations
 
 # on définit les corps ici :
-
+dist_terre_lune = 370_00E3
+dist_terre_soleil = 5.9722E24,149_597_870.7E3
 terre = Corps(5.9722E24,149_597_870.7E3,7_000E3,"Terre",(0,0,255))
 dist_vaisseau = 149_598_970.7E3 + 160E5 #on commence proche de la terre
 vaisseau = Corps(1E3,dist_vaisseau,10,"Vaisseau",(255,255,255))
 soleil = Corps(1.9884E30,0,700_000E3,"Soleil",(255,0,0))
 
+
 #Rmars=227_944_000E3
 #Vmars=0.1*24.080E3
 #Vterre=29.7E3
-
-dmin = 7000 #rayon du soleil taille limite (un peu arbitraire mais on s'en fout question d'ODG) car les corps ne sont pas ponctuels dans la vraie vie -> évite les divisions par 0
 
 #boucle du jeu
 resolution=(2000, 1200)
@@ -153,6 +177,8 @@ tickrate = 60
 liste_corps = (soleil,terre,vaisseau)
 cam_input = 0 # referentiel du Soleil pour commencer
 #initialisation : 1re itération
+theta = 0 # angle du vaisseau
+w = 0 # vitesse de rotation
 for k in range(n):
     
     tab_r[:,k],tab_v[:,k] = CI_corps_k(liste_corps,k)
@@ -161,7 +187,7 @@ for k in range(n):
 
 # Boucle principale du jeu
 running = True
-cpt_frame = 600 # Compteur pour lancer le calcul
+cpt_frame = 6  # Compteur pour lancer le calcul
 while running:
 
     for event in pygame.event.get():
@@ -169,7 +195,7 @@ while running:
             running = False
     
     # Calcul des trajectoires
-    if cpt_frame == 600:# toutes les 10 secondes
+    if cpt_frame == 6:# toutes les 10 secondes
         cpt_frame = 0
         # CALCUL DE LA TRAJECTOIRE de k corps
 
@@ -198,15 +224,18 @@ while running:
     screen.fill((0, 0, 0))  # Efface l'écran à chaque frame
 
     # Contrôles
-    dx, dy, ds, cam_input_test = controles()
+    dw, dy, ds, cam_input_test,dF = controles()
+    w += dw
+    theta += w
+
+    F = F+dF*F
     if cam_input_test != 2: # si on change de caméra
         cam_input = cam_input_test
     s += ds
     masse_vaisseau = 1E3
     # Calcul de l'accélération en fonction de la force et de la masse
-    ax = dx * dF / masse_vaisseau  # a = F / m
-    ay = dy * dF / masse_vaisseau  # a = F / m
-    accel_vaisseau = [ax, ay]
+    a_norme = F/masse_vaisseau*dy
+    accel_vaisseau = a_norme*np.array([np.cos(theta),np.sin(theta)])
     SCALE = 1E-8*10**s# échelle : 1 pixel = 10E4 km de larges
    ############################################################################################
    # Retour au temps réel 
@@ -235,18 +264,23 @@ while running:
             # Camera suit le vaisseau ou referentiel Soleil
             offset_x = cam_input*tab_r[0,2]
             offset_y = cam_input*tab_r[1,2]
-
-            pygame.draw.circle(screen,couleur , (int((tab_r[0,k]-offset_x)*SCALE+CENTER[0]), int((tab_r[1,k]-offset_y)*SCALE+CENTER[1])), size )#on enleve la position du vaisseau changement de repère O->O' vaisseau, +res/2 on se met au centreE1
-            #pygame.draw.circle(screen, color, (int(1E6*SCALE+CENTER[0]), int(1E6*SCALE+CENTER[1])), 5)# on veut que a SCALE = 1E-4 diameter = 100 d'ou diameter = 100 *
-
+            if k != 2:
+                pygame.draw.circle(screen,couleur , (int((tab_r[0,k]-offset_x)*SCALE+CENTER[0]), int((tab_r[1,k]-offset_y)*SCALE+CENTER[1])), size )#on enleve la position du vaisseau changement de repère O->O' vaisseau, +res/2 on se met au centreE1
+            if k == 2:
+                points = coord_triangle(theta,tab_r)
+                # pygame.draw.polygon(screen,couleur , (int((tab_r[0,k]-offset_x)*SCALE+CENTER[0]), int((tab_r[1,k]-offset_y)*SCALE+CENTER[1])), size )#on enleve la position du vaisseau changement de repère O->O' vaisseau, +res/2 on se met au centreE1
+                point_gauche = points[0]
+                point_droite = points[1]
+                point_haut = points[2]
+                SCALE_triangle = SCALE*1.1*1E6
+                pygame.draw.polygon(screen, couleur,[(int((point_gauche[0]-offset_x)*SCALE_triangle+CENTER[0]), int((point_gauche[1]-offset_y)*SCALE_triangle+CENTER[1])), (int((point_droite[0]-offset_x)*SCALE_triangle+CENTER[0]), int((point_droite[1]-offset_y)*SCALE_triangle+CENTER[1])), (int((point_haut[0]-offset_x)*SCALE_triangle+CENTER[0]), int((point_haut[1]-offset_y)*SCALE_triangle+CENTER[1]))] )#on enleve la position du vaisseau changement de repère O->O' vaisseau, +res/2 on se met au centreE1
             #Affichage trajectoire :
-            size = size/10
+            size = int(size/10)
             if size <1 :
                 size = 1
-            offset_x = cam_input*tab_r_predict[0,2,0]
-            offset_y = cam_input*tab_r_predict[1,2,0]
+            
             for i in range(nb_frame-1):
-                
+    
                 pygame.draw.circle(screen,couleur , (int((tab_r_predict[0,k,i]-offset_x)*SCALE+CENTER[0]), int((tab_r_predict[1,k,i]-offset_y)*SCALE+CENTER[1])), size )#on enleve la position du vaisseau changement de repère O->O' vaisseau, +res/2 on se met au centreE1
                 
 
@@ -254,3 +288,4 @@ while running:
     clock.tick(tickrate)
     
 pygame.quit()
+# IDEE : diviser toutes les distances par 10 : diviser G par 100 
