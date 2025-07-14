@@ -141,7 +141,8 @@ def CI_corps_k(liste_corps,k):
     vy = np.cos(theta)*v_abs
 
     return( [x,y],[vx,vy])
-    
+
+ 
 #########################################################################################
 
 # Définition des constantes
@@ -193,7 +194,7 @@ for k in range(n):
     ak = calc_acc_k(tab_r,k,liste_corps)#instant initial cf pas encore dans la boucle
     tab_a[:,k] = ak #on a besoin de l'accélérations initiale pour calculer v2 par Verlet !
 
-nb_frame = 600
+nb_frame = 1200
 
 # Boucle principale du jeu
 running = True
@@ -205,6 +206,7 @@ while running:
             running = False
     
     # Calcul des trajectoires
+    
     if cpt_frame == 60:# toutes les 10 secondes
         cpt_frame = 0
         # CALCUL DE LA TRAJECTOIRE de k corps
@@ -289,15 +291,16 @@ while running:
             size = int(size/10)
             if size <1 :
                 size = 1
-            
+            cpt = 10
             for i in range(nb_frame-1):
-
-                #offset  bouge lui même a chaque pas de temps i !
-                offset_x_i = tab_r_predict[0,referential,i]
-                offset_y_i = tab_r_predict[1,referential,i]
+                if cpt == 10:
+                    #offset  bouge lui même a chaque pas de temps i !
+                    offset_x_i = tab_r_predict[0,referential,i]
+                    offset_y_i = tab_r_predict[1,referential,i]
     
-                pygame.draw.circle(screen,couleur , (int((tab_r_predict[0,k,i]-offset_x_i)*SCALE+CENTER[0]), int((tab_r_predict[1,k,i]-offset_y_i)*SCALE+CENTER[1])), 2 )#on enleve la position du vaisseau changement de repère O->O' vaisseau, +res/2 on se met au centreE1
-                
+                    pygame.draw.circle(screen,couleur , (int((tab_r_predict[0,k,i]-offset_x_i)*SCALE+CENTER[0]), int((tab_r_predict[1,k,i]-offset_y_i)*SCALE+CENTER[1])), 2 )#on enleve la position du vaisseau changement de repère O->O' vaisseau, +res/2 on se met au centreE1
+                    cpt = 0
+                cpt += 1
 
     pygame.display.flip()
     clock.tick(tickrate)
