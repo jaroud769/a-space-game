@@ -36,6 +36,8 @@ def Force(rk,rj,k,j,liste_corps):#Calcule la force exercée par tous les corps j
 
     return(np.array((G*masse_k*masse_j/(rkj**2))*ukj)) #retourne le vecteur force
 
+length_factor = 0.1 # on réduit toutes les tailles de 10 !
+
 ## calc_acc_k : Calcule l'accélération du corps k   
 def calc_acc_k(tab_r,k,liste_corps):
 
@@ -79,7 +81,7 @@ def controles():
     dy=0
     ds=0
     dF=0
-    cam_input = 2 # pas d'info !!
+    cam_input = -1 # pas d'info !!
     pressed = pygame.key.get_pressed()
     # avant arriere
     if pressed[pygame.K_z]:
@@ -103,7 +105,10 @@ def controles():
         cam_input =1
 
     if pressed[pygame.K_v]:
-        cam_input += 1
+        cam_input = 0
+
+    if pressed[pygame.K_x]:
+        cam_input = 2
 
     if pressed[pygame.K_f]:
        dF -= 0.1
@@ -144,10 +149,10 @@ F = 1E4 # Newton (force appliquée par l'utilisateur)
 dt = 300
 dt_predic = dt*100 #moins précis pour calculer plus vite !
 color = (255, 0, 255)  # couleur du vaisseau
-nb_frame = 600
+
 #on initialise nos tableaux
 
-n = 3 # nombre de corps 
+n = 5 # nombre de corps 
 tab_r=np.zeros((2,n)) #tableau des positions
 tab_v=np.zeros((2,n)) #tableau des vitesses        
 tab_a=np.zeros((2,n)) #tableau des accélérations
@@ -159,6 +164,8 @@ terre = Corps(5.9722E24,149_597_870.7E3,7_000E3,"Terre",(0,0,255))
 dist_vaisseau = 149_598_970.7E3 + 160E5 #on commence proche de la terre
 vaisseau = Corps(1E3,dist_vaisseau,10,"Vaisseau",(255,255,255))
 soleil = Corps(1.9884E30,0,700_000E3,"Soleil",(255,0,0))
+corps_random1 = Corps(5.9722E26,149_597_870.7E3*1.5,2*7_000E3*1.5,"corps random1",(255,100,0))
+corps_random2 = Corps(5.9722E27,149_597_870.7E3*3,2*7_000E3*3,"corps random2",(255,0,100))
 
 
 #Rmars=227_944_000E3
@@ -174,10 +181,11 @@ pygame.init()
 screen = pygame.display.set_mode(resolution)
 clock = pygame.time.Clock()
 tickrate = 60
-liste_corps = (soleil,terre,vaisseau)
+liste_corps = (soleil,terre,vaisseau,corps_random1,corps_random2)
 cam_input = 0 # referentiel du Soleil pour commencer
 #initialisation : 1re itération
 theta = 0 # angle du vaisseau
+referential = 0 # soleil de base
 w = 0 # vitesse de rotation
 for k in range(n):
     
@@ -185,9 +193,11 @@ for k in range(n):
     ak = calc_acc_k(tab_r,k,liste_corps)#instant initial cf pas encore dans la boucle
     tab_a[:,k] = ak #on a besoin de l'accélérations initiale pour calculer v2 par Verlet !
 
+nb_frame = 600
+
 # Boucle principale du jeu
 running = True
-cpt_frame = 6  # Compteur pour lancer le calcul
+cpt_frame = 60  # Compteur pour lancer le calcul
 while running:
 
     for event in pygame.event.get():
@@ -195,7 +205,7 @@ while running:
             running = False
     
     # Calcul des trajectoires
-    if cpt_frame == 6:# toutes les 10 secondes
+    if cpt_frame == 60:# toutes les 10 secondes
         cpt_frame = 0
         # CALCUL DE LA TRAJECTOIRE de k corps
 
@@ -223,14 +233,15 @@ while running:
     cpt_frame += 1
     screen.fill((0, 0, 0))  # Efface l'écran à chaque frame
 
-    # Contrôles
-    dw, dy, ds, cam_input_test,dF = controles()
+    # Contrôles: on récupère tous les inputs
+    
+    dw, dy, ds, cam_input,dF = controles()
     w += dw
     theta += w
-
+    if cam_input != -1:
+        referential = cam_input # prend les valeurs 0 1 ou 2 
     F = F+dF*F
-    if cam_input_test != 2: # si on change de caméra
-        cam_input = cam_input_test
+    
     s += ds
     masse_vaisseau = 1E3
     # Calcul de l'accélération en fonction de la force et de la masse
@@ -262,8 +273,8 @@ while running:
                 size = 1
             couleur = liste_corps[k].caracteristiques()[3]
             # Camera suit le vaisseau ou referentiel Soleil
-            offset_x = cam_input*tab_r[0,2]
-            offset_y = cam_input*tab_r[1,2]
+            offset_x = tab_r[0,referential]
+            offset_y = tab_r[1,referential]
             if k != 2:
                 pygame.draw.circle(screen,couleur , (int((tab_r[0,k]-offset_x)*SCALE+CENTER[0]), int((tab_r[1,k]-offset_y)*SCALE+CENTER[1])), size )#on enleve la position du vaisseau changement de repère O->O' vaisseau, +res/2 on se met au centreE1
             if k == 2:
@@ -280,8 +291,12 @@ while running:
                 size = 1
             
             for i in range(nb_frame-1):
+
+                #offset  bouge lui même a chaque pas de temps i !
+                offset_x_i = tab_r_predict[0,referential,i]
+                offset_y_i = tab_r_predict[1,referential,i]
     
-                pygame.draw.circle(screen,couleur , (int((tab_r_predict[0,k,i]-offset_x)*SCALE+CENTER[0]), int((tab_r_predict[1,k,i]-offset_y)*SCALE+CENTER[1])), size )#on enleve la position du vaisseau changement de repère O->O' vaisseau, +res/2 on se met au centreE1
+                pygame.draw.circle(screen,couleur , (int((tab_r_predict[0,k,i]-offset_x_i)*SCALE+CENTER[0]), int((tab_r_predict[1,k,i]-offset_y_i)*SCALE+CENTER[1])), 2 )#on enleve la position du vaisseau changement de repère O->O' vaisseau, +res/2 on se met au centreE1
                 
 
     pygame.display.flip()
