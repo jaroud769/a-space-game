@@ -7,7 +7,7 @@
 Un simulateur de système planétaire avec physique réaliste et contrôle de vaisseau spatial, implémenté en Python avec Pygame.
 
 <div align="center">
-  <img src="https://via.placeholder.com/800x450.png?text=Simulation+Gravitationnelle" alt="Capture d'écran" width="70%"/>
+  <img src = "\orbites_cool.png width="70%"/>
   <br>
   <em>Capture d'écran du simulateur en action</em>
 </div>
