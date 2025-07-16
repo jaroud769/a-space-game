@@ -21,7 +21,6 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
       <ul>
         <li>Gravité newtonienne précise</li>
         <li>Algorithme de Verlet pour l'intégration</li>
-        <li>Collisions élastiques</li>
       </ul>
     </td>
     <td width="30%">
