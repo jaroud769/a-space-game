@@ -3,9 +3,7 @@
 import random
 import numpy as np
 import pygame
-import random
-import matplotlib.pyplot as plt
-import pygame
+
 
 ########################################################################################
 # Définition des fonctions et classes 
@@ -30,8 +28,7 @@ def Force(rk,rj,k,j,liste_corps):#Calcule la force exercée par tous les corps j
     rkj_vec = rj-rk
     rkj = np.linalg.norm(rkj_vec)
     if rkj < (rayon_k + rayon_j)/20: # évite les divergences
-        return(np.array([0.0,0.0]))
-      
+        return(np.array([0.0,0.0]))  
     ukj=rkj_vec/rkj
 
     return(np.array((G*masse_k*masse_j/(rkj**2))*ukj)) #retourne le vecteur force
@@ -152,7 +149,6 @@ def CI_corps_k(liste_corps,k):
     _,distance,_,_,_ = liste_corps[k].caracteristiques()
     if distance == 0 : #ie si on est le Soleil
         return([[0,0],[0,0]])
-    #SOleil
     masse_soleil ,_ ,_ ,_,_= liste_corps[0].caracteristiques()    
     x = distance * np.cos(theta)
     y = distance * np.sin(theta) 
@@ -162,9 +158,7 @@ def CI_corps_k(liste_corps,k):
 
     return( [x,y],[vx,vy])
 
- 
 #########################################################################################
-
 # Définition des constantes
 # Options
 F = 1E4 # Newton (force appliquée par l'utilisateur)
@@ -331,6 +325,7 @@ while running:
                     y_end = int((tab_r[1,k] + diff_vitesse[1] * dt * 1000 -offset_y)*SCALE+CENTER[1])
                     pygame.draw.line(screen,(255,255,255),(x_begin,y_begin),(x_end,y_begin),1)
                     pygame.draw.line(screen,(255,255,255),(x_begin,y_begin),(x_begin,y_end),1)
+    
                     #pygame.draw.line(screen,(255,255,255) , (int((tab_r[0,k]-offset_x)*SCALE+CENTER[0]), int((tab_r[1,k]-offset_y)*SCALE+CENTER[1])),(int((tab_r[0,k]-offset_x)*SCALE+CENTER[0]), int((tab_r[1,k]-offset_y)*SCALE+CENTER[1])), size )#on enleve la position du vaisseau changement de repère O->O' vaisseau, +res/2 on se met au centreE1
                     
                                           
@@ -363,4 +358,3 @@ while running:
     clock.tick(tickrate)
     
 pygame.quit()
-# IDEE : diviser toutes les distances par 10 : diviser G par 100 
