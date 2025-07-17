@@ -13,24 +13,7 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
 <div align="center">
   <img src="demo_asg.gif" width="80%"/>
 </div>
-<div align="center">
-  <img src="orbites_cool.png" alt="Visualisation des orbites" width="80%"/>
-  <br>
-  <em>Capture d'écran, orbites des planètes dans le référentiel du vaisseau</em>
-</div>
-## Fonctionnalités Clés
-
-<table>
-  <tr>
-    <td width="30%">
-      <h3> Physique Réaliste</h3>
-      <ul>
-        <li>Gravité newtonienne </li>
-        <li>Algorithme de Verlet pour l'intégration</li>
-      </ul>
-    </td>
-    <td width="30%">
-      <h3> Contrôles </h3>
+ <h3> Contrôles </h3>
       <ul>
         <li>Orientation du vaisseau : q,d </li>
         <li>Poussée : z,s </li>
@@ -48,6 +31,24 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
       </ul>
     </td>
   </tr>
+<div align="center">
+  <img src="orbites_cool.png" alt="Visualisation des orbites" width="80%"/>
+  <br>
+  <em>Capture d'écran, orbites des planètes dans le référentiel du vaisseau</em>
+</div>
+## Fonctionnalités Clés
+
+<table>
+  <tr>
+    <td width="30%">
+      <h3> Physique Réaliste</h3>
+      <ul>
+        <li>Gravité newtonienne </li>
+        <li>Algorithme de Verlet pour l'intégration</li>
+      </ul>
+    </td>
+    <td width="30%">
+     
 </table>
 
 
