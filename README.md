@@ -11,6 +11,9 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
   
 </div>
 <div align="center">
+  <img src="demo_asg.gif" width="80%"/>
+</div>
+<div align="center">
   <img src="orbites_cool.png" alt="Visualisation des orbites" width="80%"/>
   <br>
   <em>Capture d'écran, orbites des planètes dans le référentiel du vaisseau</em>
@@ -46,7 +49,5 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
     </td>
   </tr>
 </table>
-<div align="center">
-  <img src="demo_asg.gif" width="80%"/>
-</div>
+
 
