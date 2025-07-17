@@ -50,11 +50,4 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
 <div align="center">
   <img src="demo_asg.gif" width="80%"/>
 </div>
-## 🛠 Installation
 
-```bash
-# Cloner le dépôt
-git clone https://github.com/votre-utilisateur/simulation-gravitationnelle.git
-
-# Se déplacer dans le dossier
-cd simulation-gravitationnelle
