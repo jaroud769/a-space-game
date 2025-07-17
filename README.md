@@ -29,9 +29,11 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
     <td width="30%">
       <h3> Contrôles </h3>
       <ul>
-        <li>Pilotage de vaisseau spatial</li>
-        <li>Choix du référentiel</li>
-        <li>Système de verrouillage</li>
+        <li>Orientation du vaisseau : q,d </li>
+        <li>Poussée : z,s </li>
+        <li>Intensité de la poussée : f,g</li>
+        <li>Choix du référentiel : x,c,v</li>
+        <li>Cliquer avec la souris pour verrouiller un astre</li>
       </ul>
     </td>
     <td width="30%">
