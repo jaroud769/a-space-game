@@ -13,7 +13,7 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
 <div align="center">
   <img src="orbites_cool.png" alt="Visualisation des orbites" width="80%"/>
   <br>
-  <em>Capture d'écran du simulateur en action</em>
+  <em>Capture d'écran, orbites des planètes dans le référentiel du vaisseau</em>
 </div>
 ## Fonctionnalités Clés
 
@@ -22,15 +22,15 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
     <td width="30%">
       <h3> Physique Réaliste</h3>
       <ul>
-        <li>Gravité newtonienne précise</li>
+        <li>Gravité newtonienne </li>
         <li>Algorithme de Verlet pour l'intégration</li>
       </ul>
     </td>
     <td width="30%">
-      <h3> Contrôle Intuitif</h3>
+      <h3> Contrôles </h3>
       <ul>
         <li>Pilotage de vaisseau spatial</li>
-        <li>Multiples modes caméra</li>
+        <li>Choix du référentiel</li>
         <li>Système de verrouillage</li>
       </ul>
     </td>
