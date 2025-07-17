@@ -44,9 +44,6 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
     </td>
   </tr>
 </table>
-
-## Démonstration
-
 <div align="center">
   <img src="demo_asg.gif" width="80%"/>
 </div>
