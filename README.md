@@ -45,12 +45,11 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
   </tr>
 </table>
 
-##  Démonstration
+## Démonstration
 
-https://user-images.githubusercontent.com/.../simulation-demo.mp4
-
-*Vidéo de démonstration (à remplacer par votre propre lien)*
-
+<div align="center">
+  <img src="demo_asg.gif" width="80%"/>
+</div>
 ## 🛠 Installation
 
 ```bash
