@@ -7,48 +7,40 @@
 Un simulateur de système planétaire avec physique réaliste et contrôle de vaisseau spatial, implémenté en Python avec Pygame.
 
 <div align="center">
-  <br>
-  
-</div>
-<div align="center">
   <img src="demo_asg.gif" width="80%"/>
 </div>
-<table>
- <h3> Contrôles </h3>
-      <ul>
-        <li>Orientation du vaisseau : q,d </li>
-        <li>Poussée : z,s </li>
-        <li>Intensité de la poussée : f,g</li>
-        <li>Choix du référentiel : x,c,v</li>
-        <li>Cliquer avec la souris pour verrouiller un astre</li>
-      </ul>
-    </td>
-    <td width="30%">
-      <h3> Visualisation</h3>
-      <ul>
-        <li>Trajectoires prédictives</li>
-        <li>Corps célestes à l'échelle</li>
-        <li>Indicateurs de vitesse</li>
-      </ul>
-    </td>
-  </tr>
-   <tr>
-    <td width="30%">
-      <h3> Physique Réaliste</h3>
-      <ul>
-        <li>Gravité newtonienne </li>
-        <li>Algorithme de Verlet pour l'intégration</li>
-      </ul>
-    </td>
-    <td width="30%">
-    </table>
+
+## Contrôles
+- **Orientation du vaisseau** : q, d
+- **Poussée** : z, s
+- **Intensité de la poussée** : f, g
+- **Choix du référentiel** : x, c, v
+- **Cliquer avec la souris** pour verrouiller un astre
+
+## Fonctionnalités
+
+### Visualisation
+- Trajectoires prédictives
+- Corps célestes à l'échelle
+- Indicateurs de vitesse
+- Différents référentiels disponibles
+
+### Physique Réaliste
+- Gravité newtonienne (loi de l'inverse du carré)
+- Algorithme de Verlet pour l'intégration numérique
+- Simulation précise des orbites planétaires
+
 <div align="center">
   <img src="orbites_cool.png" alt="Visualisation des orbites" width="80%"/>
   <br>
-  <em>Capture d'écran, orbites des planètes dans le référentiel du vaisseau</em>
+  <em>Capture d'écran : orbites des planètes dans le référentiel du vaisseau</em>
 </div>
-## Fonctionnalités Clés
 
+## Fonctionnalités Clés
+- Système solaire paramétrable
+- Vaisseau spatial contrôlable avec physique réaliste
+- Visualisation des forces et trajectoires
+- Multiples modes de caméra et référentiels
 
  
      
