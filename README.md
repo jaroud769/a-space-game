@@ -1,4 +1,4 @@
-# Simulation Gravitationnelle Interactive
+# Simulation de la gravité 
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![Pygame](https://img.shields.io/badge/Pygame-2.0+-green.svg)](https://www.pygame.org/news)
