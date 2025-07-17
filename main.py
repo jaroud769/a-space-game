@@ -67,7 +67,7 @@ def coord_triangle(theta,tab_r):
     points = [(point_gauche[0],point_gauche[1]),(point_droite[0],point_droite[1]),(point_haut[0],point_haut[1])]
     return(points)
 
-def nearest_planet(x,y,scale,tab_r,referential,n): #isclicked booléen ,x,y, position en pixels, referentiel corps k sur lequel la cam est basée
+def nearest_planet(x,y,scale,tab_r,referential,n): #x,y, position en pixels, referentiel corps k sur lequel la cam est basée
 
     near_planets = []
     near_planets_index = []
