@@ -11,7 +11,11 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
   <br>
   <em>Capture d'écran du simulateur en action</em>
 </div>
-
+<div align="center">
+  <img src="orbites_cool.png" alt="Visualisation des orbites" width="80%"/>
+  <br>
+  <em>Simulation des orbites planétaires avec trajectoires prédictives</em>
+</div>
 ## Fonctionnalités Clés
 
 <table>
