@@ -7,11 +7,14 @@
 Un simulateur de système planétaire avec physique réaliste et contrôle de vaisseau spatial, implémenté en Python avec Pygame.
 
 <div align="center">
-  <img src="https://via.placeholder.com/800x450.png?text=Simulation+Gravitationnelle" alt="Capture d'écran" width="70%"/>
+  <br>
+  
+</div>
+<div align="center">
+  <img src="orbites_cool.png" alt="Visualisation des orbites" width="80%"/>
   <br>
   <em>Capture d'écran du simulateur en action</em>
 </div>
-
 ## Fonctionnalités Clés
 
 <table>
@@ -21,7 +24,6 @@ Un simulateur de système planétaire avec physique réaliste et contrôle de va
       <ul>
         <li>Gravité newtonienne précise</li>
         <li>Algorithme de Verlet pour l'intégration</li>
-        <li>Collisions élastiques</li>
       </ul>
     </td>
     <td width="30%">
